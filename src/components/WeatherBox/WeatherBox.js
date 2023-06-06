@@ -1,13 +1,16 @@
 import PickCity from '../PickCity/PickCity';
 import WeatherSummary from '../WeatherSummary/WeatherSummary';
 import Loader from '../Loader/Loader';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
-const WeatherBox = ({ props }) => {
+const WeatherBox = props => {
 
+  const [weather, setWeather] = useState();
+
+  // eslint-disable-next-line
   const handleCityChange = useCallback((city) => {
 
-    fetch(`https://api.openweathermap.org/data/2.5/weather?${{ city }}&lon={lon}&appid={9c70c6eb0daf4a63afd3834b7049aab5}`)
+    fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=9c70c6eb0daf4a63afd3834b7049aab5&units=metric`)
       .then(res => res.json())
       .then(data => {
         const weatherData = {
@@ -16,13 +19,13 @@ const WeatherBox = ({ props }) => {
           icon: data.weather[0].icon,
           description: data.weather[0].main
         };
-        console.log(weatherData);
+        setWeather(weatherData);
       });
   });
   return (
     <section>
       <PickCity action={handleCityChange} />
-      <WeatherSummary />
+      <WeatherSummary {...weather} />
       <Loader />
     </section>
   )
